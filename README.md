@@ -12,11 +12,7 @@ To run this app, you need to have Node.js (version 12.x or later) and npm (versi
 
 `git clone https://github.com/your-repo/sneaker-factory.git`
 
-2. Change to the sneaker-factory directory:
-
-`cd sneaker-factory`
-
-3. Install the required dependencies:
+2. Install the required dependencies:
 
 `npm install`
 

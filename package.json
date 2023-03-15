@@ -1,11 +1,24 @@
 {
-  "dependencies": {
-    "@openzeppelin/contracts": "^4.8.2",
-    "ethers": "^6.1.0"
+  "name": "aurora-sneakers-app",
+  "version": "1.0.0",
+  "description": "A simple React app to interact with the SneakerFactory smart contract for creating and managing Sneaker NFTs.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "devDependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.4.3"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bpolania/Aurora-Sneakers-App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bpolania/Aurora-Sneakers-App/issues"
+  },
+  "homepage": "https://github.com/bpolania/Aurora-Sneakers-App#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "ethers": "^6.1.0"
   }
 }
