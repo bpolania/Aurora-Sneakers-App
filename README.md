@@ -1,32 +1,40 @@
-# Sneaker Factory
+# Sneaker NFT Factory
 
-A simple React app to interact with the SneakerFactory smart contract for creating and managing Sneaker NFTs.
+A simple Node.js application to interact with the Sneaker NFT Factory smart contract on the Aurora network.
 
 ## Prerequisites
 
-To run this app, you need to have Node.js (version 12.x or later) and npm (version 6.x or later) installed on your system.
+- [Node.js](https://nodejs.org/) (v14 or later)
+- An Ethereum address and private key
+- The address of the deployed SneakerFactory contract
 
-## Installation
+## Setup
 
 1. Clone the repository:
 
-`git clone https://github.com/your-repo/sneaker-factory.git`
+```
+git clone https://github.com/yourusername/sneaker-nft-factory.git
+cd sneaker-nft-factory
+```
 
-2. Install the required dependencies:
+2. Install dependencies:
 
 `npm install`
 
-## Running the app
+3. Create a .env file in the project root with the following content:
 
-To start the development server, run the following command:
+`PRIVATE_KEY=your_private_key_here`
 
-`npm start`
+Replace `your_private_key_here` with your Ethereum private key.
 
-The app should now be running at http://localhost:3000.
+Note: Make sure to keep your private key secure and never share it. The .env file is ignored by default in the .gitignore file to prevent accidentally sharing your private key.
 
-## Running tests
+4. Update the contractAddress and fromAddress variables in the app.js file with your deployed SneakerFactory contract address and Ethereum address, respectively.
 
-To run the test suite, execute the following command:
+## Usage
 
-`npm test`
+To interact with the SneakerFactory contract and create a Sneaker NFT, run the following command:
 
+`node app.js`
+
+The script will call the `createSneakerNFT` function from the SneakerFactory contract, and if successful, it will print the transaction receipt to the console.

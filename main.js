@@ -1,43 +1,40 @@
 require('dotenv').config();
 const Web3 = require('web3');
-const { abi } = require('./SneakerFactory.json');
-
-
-const providerUrl = 'https://mainnet.aurora.dev';
-const web3 = new Web3(providerUrl);
+const web3 = new Web3('https://testnet.aurora.dev');
 
 const contractABI = [{"inputs":[{"internalType":"address","name":"admin","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"previousAdminRole","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"newAdminRole","type":"bytes32"}],"name":"RoleAdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"sender","type":"address"}],"name":"RoleGranted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"sender","type":"address"}],"name":"RoleRevoked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"nftAddress","type":"address"},{"indexed":true,"internalType":"address","name":"creator","type":"address"}],"name":"SneakerNFTCreated","type":"event"},{"inputs":[],"name":"ADMIN_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DEFAULT_ADMIN_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"createSneakerNFT","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getNFTContracts","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"role","type":"bytes32"}],"name":"getRoleAdmin","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"role","type":"bytes32"},{"internalType":"address","name":"account","type":"address"}],"name":"grantRole","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"role","type":"bytes32"},{"internalType":"address","name":"account","type":"address"}],"name":"hasRole","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"nfts","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"role","type":"bytes32"},{"internalType":"address","name":"account","type":"address"}],"name":"renounceRole","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"role","type":"bytes32"},{"internalType":"address","name":"account","type":"address"}],"name":"revokeRole","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}];
-
 const contractAddress = "0xe27cE36c548924dB4c7A4C1CE7BbF6494762925F"; // Replace with your deployed contract address
+const sneakerFactory = new web3.eth.Contract(contractABI, contractAddress);
 
-const main = async () => {
+const fromAddress = '0xC6bfB4e43F149Df85e08Df5b4Ea715ce60d89579'; // Replace with your Ethereum address
+
+// Unlock your account using your private key (only for demonstration purposes, use a safer method in production)
+const privateKey = process.env.PRIVATE_KEY;
+const account = web3.eth.accounts.privateKeyToAccount(privateKey);
+web3.eth.accounts.wallet.add(account);
+web3.eth.defaultAccount = account.address;
+
+async function createSneakerNFT() {
   try {
-    const accounts = await web3.eth.getAccounts();
-    const sneakerFactory = new web3.eth.Contract(contractABI, contractAddress);
+    const data = sneakerFactory.methods.createSneakerNFT().encodeABI();
+    const gasPrice = await web3.eth.getGasPrice();
+    const gasLimit = await sneakerFactory.methods.createSneakerNFT().estimateGas({ from: fromAddress });
 
-    // Call the getNFTContracts function to get the list of deployed SneakerNFT contracts
-    const nftContracts = await sneakerFactory.methods.getNFTContracts().call();
-    console.log("Deployed SneakerNFT contracts:", nftContracts);
+    const tx = {
+      from: fromAddress,
+      to: contractAddress,
+      data,
+      gasPrice,
+      gas: gasLimit
+    };
 
-    // Listen for the SneakerNFTCreated event
-    sneakerFactory.events.SneakerNFTCreated((error, event) => {
-      if (error) {
-        console.error("Event error:", error);
-      } else {
-        console.log(`New SneakerNFT created by ${event.returnValues.creator}: ${event.returnValues.nftAddress}`);
-      }
-    });
+    const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);
+    const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
 
-    // Call the createSneakerNFT function to create a new SneakerNFT contract
-    const createSneakerNFTTx = await sneakerFactory.methods.createSneakerNFT().send({ from: accounts[0] });
-    console.log("SneakerNFT created!");
-
+    console.log('Sneaker NFT created:', receipt);
   } catch (error) {
-    console.error("Error:", error);
+    console.error('Error creating Sneaker NFT:', error);
   }
-};
+}
 
-main();
-
-
-
+createSneakerNFT();
