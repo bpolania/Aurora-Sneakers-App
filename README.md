@@ -13,7 +13,7 @@ A simple Node.js application to interact with the Sneaker NFT Factory smart cont
 1. Clone the repository:
 
 ```
-git clone https://github.com/yourusername/sneaker-nft-factory.git
+git clone https://github.com/bpolania/Aurora-Sneakers-App
 cd sneaker-nft-factory
 ```
 
